@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MineralsReady — Minerals Compliance &amp; Training Platform</title>
+<meta name="description" content="MineralsReady is a government-led digital public service for responsible artisanal and small-scale mining: a field app for training, verification and self-reporting, paired with a regulator dashboard for oversight.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0e14'/%3E%3Cpath d='M16 6L25 12V20L16 26L7 20V12L16 6Z' fill='none' stroke='%23f5a623' stroke-width='1.6'/%3E%3Cpath d='M16 14L20.5 16.5V21.5L16 24L11.5 21.5V16.5L16 14Z' fill='%2335d0ba'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --bg:#0a0e14;
+    --bg-raised:#10161f;
+    --bg-soft:#161d29;
+    --bg-card:#121923;
+    --ink:#eef1f6;
+    --ink-soft:#8e97a8;
+    --ink-faint:#5c6577;
+    --accent:#f5a623;
+    --accent-dim:#8a6220;
+    --verify:#35d0ba;
+    --verify-dim:#1f5e54;
+    --rule:rgba(238,241,246,0.10);
+    --rule-strong:rgba(238,241,246,0.18);
+    --shadow:rgba(0,0,0,0.55);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  img,svg{max-width:100%;display:block;}
+  a{color:inherit;}
+
+  .label{
+    font-family:'JetBrains Mono',ui-monospace,monospace;
+    font-size:0.68rem;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--accent);
+  }
+  h1,h2,h3{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    margin:0;
+    letter-spacing:-0.01em;
+    text-wrap:balance;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,56px);}
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky;top:0;z-index:40;
+    background:rgba(10,14,20,0.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--rule);
+  }
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:72px;}
+  .brandmark{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.1rem;letter-spacing:-0.01em;}
+  .brandmark svg{width:24px;height:24px;flex:none;}
+  .brandmark .ready{color:var(--accent);}
+  nav ul{list-style:none;display:flex;gap:30px;margin:0;padding:0;}
+  nav ul a{font-size:0.86rem;text-decoration:none;color:var(--ink-soft);transition:color .15s ease;}
+  nav ul a:hover,nav a:focus-visible{color:var(--accent);}
+  .navlinks{display:flex;align-items:center;gap:30px;}
+  @media (max-width:860px){ .navlinks ul{display:none;} }
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:'JetBrains Mono',monospace;font-size:0.72rem;letter-spacing:0.07em;text-transform:uppercase;
+    padding:11px 20px;border-radius:3px;text-decoration:none;
+    border:1px solid var(--rule-strong);color:var(--ink);background:none;appearance:none;cursor:pointer;
+    transition:border-color .15s ease,background .15s ease,color .15s ease;
+  }
+  .btn:hover{border-color:var(--accent);color:var(--accent);}
+  .btn-solid{background:var(--accent);border-color:var(--accent);color:#1a1304;}
+  .btn-solid:hover{background:#ffc04d;border-color:#ffc04d;color:#1a1304;}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;border-bottom:1px solid var(--rule);overflow:hidden;}
+  .hero::before{
+    content:'';position:absolute;inset:0;z-index:0;
+    background:radial-gradient(ellipse 60% 50% at 80% 0%, rgba(245,166,35,0.12), transparent 60%),
+               radial-gradient(ellipse 50% 40% at 10% 100%, rgba(53,208,186,0.08), transparent 60%);
+  }
+  .hero .wrap{
+    position:relative;z-index:1;
+    display:grid;grid-template-columns:1.05fr 0.95fr;gap:48px;align-items:center;
+    padding-top:clamp(52px,7vw,96px);padding-bottom:clamp(52px,7vw,96px);
+  }
+  @media (max-width:900px){ .hero .wrap{grid-template-columns:1fr;} .hero-art{order:-1;} }
+  .hero-eyebrow{margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+  .hero-eyebrow .rule{width:30px;height:1px;background:var(--accent);}
+  .hero h1{font-size:clamp(2.4rem,5vw,3.9rem);line-height:1.04;}
+  .hero h1 .accentword{color:var(--accent);}
+  .hero p.lede{margin-top:22px;max-width:50ch;color:var(--ink-soft);font-size:1.07rem;}
+  .hero-ctas{display:flex;gap:14px;margin-top:34px;flex-wrap:wrap;}
+  .hero-note{margin-top:24px;font-size:0.82rem;color:var(--ink-faint);}
+  .hero-art{display:flex;justify-content:center;align-items:center;}
+  .hero-art svg{width:100%;max-width:420px;}
+
+  /* ---------- STATS STRIP ---------- */
+  .ledger{border-bottom:1px solid var(--rule);background:var(--bg-raised);}
+  .ledger .wrap{display:grid;grid-template-columns:repeat(4,1fr);}
+  .ledger-item{padding:26px clamp(16px,2.4vw,30px);border-right:1px solid var(--rule);}
+  .ledger-item:last-child{border-right:none;}
+  .ledger-item .num{font-family:'JetBrains Mono',monospace;font-size:1.3rem;color:var(--accent);font-weight:500;}
+  .ledger-item p{margin:8px 0 0;font-size:0.84rem;color:var(--ink-soft);}
+  @media (max-width:860px){ .ledger .wrap{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:520px){ .ledger .wrap{grid-template-columns:1fr;} .ledger-item{border-right:none;border-bottom:1px solid var(--rule);} .ledger-item:last-child{border-bottom:none;} }
+
+  /* ---------- SECTION SHELL ---------- */
+  section{padding:clamp(56px,8vw,104px) 0;}
+  .section-head{display:flex;justify-content:space-between;align-items:baseline;gap:30px;margin-bottom:clamp(32px,5vw,52px);flex-wrap:wrap;}
+  .section-head h2{font-size:clamp(1.8rem,3.1vw,2.5rem);}
+  .section-head .label{white-space:nowrap;}
+  .section-intro{color:var(--ink-soft);max-width:66ch;font-size:1rem;margin:-18px 0 40px;}
+  .alt{background:var(--bg-raised);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);}
+
+  /* ---------- TWO SURFACES ---------- */
+  .surfaces{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;}
+  @media (max-width:760px){ .surfaces{grid-template-columns:1fr;} }
+  .surface{background:var(--bg-card);padding:clamp(28px,3.4vw,40px);}
+  .surface .label{display:block;margin-bottom:14px;}
+  .surface h3{font-size:1.5rem;margin-bottom:10px;}
+  .surface > p{color:var(--ink-soft);font-size:0.95rem;max-width:42ch;margin-bottom:24px;}
+  .surface.dash .label{color:var(--verify);}
+  .featlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;}
+  .featlist li{display:flex;gap:12px;font-size:0.92rem;color:var(--ink-soft);align-items:flex-start;}
+  .featlist li b{color:var(--ink);font-weight:600;}
+  .tick{flex:none;width:18px;height:18px;margin-top:2px;}
+  .surface .tick{color:var(--accent);}
+  .surface.dash .tick{color:var(--verify);}
+  .seam-note{margin-top:26px;padding-top:20px;border-top:1px solid var(--rule);font-size:0.85rem;color:var(--ink-faint);}
+
+  /* ---------- REASONS GRID ---------- */
+  .reasons{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;}
+  @media (max-width:860px){ .reasons{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:560px){ .reasons{grid-template-columns:1fr;} }
+  .reason{background:var(--bg-card);padding:24px 22px;}
+  .reason .idx{font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--accent);}
+  .reason h4{font-family:'Space Grotesk',sans-serif;font-size:1.02rem;font-weight:600;margin:12px 0 6px;color:var(--ink);}
+  .reason p{margin:0;font-size:0.86rem;color:var(--ink-soft);}
+
+  /* ---------- CURRICULUM ---------- */
+  .modgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;}
+  @media (max-width:900px){ .modgrid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:520px){ .modgrid{grid-template-columns:1fr;} }
+  .mod{background:var(--bg-card);padding:22px 20px;}
+  .mod .glyph{
+    width:34px;height:34px;border-radius:7px;display:flex;align-items:center;justify-content:center;
+    background:var(--bg-soft);border:1px solid var(--rule-strong);margin-bottom:14px;
+  }
+  .mod .glyph svg{width:17px;height:17px;color:var(--accent);}
+  .mod h4{font-family:'Space Grotesk',sans-serif;font-size:0.98rem;font-weight:600;margin-bottom:6px;}
+  .mod p{margin:0;font-size:0.82rem;color:var(--ink-soft);}
+
+  /* ---------- PHASES ---------- */
+  .phases{list-style:none;margin:0;padding:0;counter-reset:step;display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;}
+  @media (max-width:900px){ .phases{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:560px){ .phases{grid-template-columns:1fr;} }
+  .phases li{counter-increment:step;background:var(--bg-card);padding:24px 20px;position:relative;}
+  .phases li::before{
+    content:counter(step,decimal-leading-zero);
+    display:block;font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--verify);margin-bottom:12px;
+  }
+  .phases .when{font-family:'JetBrains Mono',monospace;font-size:0.68rem;letter-spacing:0.08em;color:var(--ink-faint);text-transform:uppercase;display:block;margin-bottom:6px;}
+  .phases h4{font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:600;margin:0 0 8px;}
+  .phases p{margin:0;font-size:0.84rem;color:var(--ink-soft);}
+
+  /* ---------- GOVERNANCE ---------- */
+  .govgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;}
+  @media (max-width:760px){ .govgrid{grid-template-columns:1fr;} }
+  .gov{background:var(--bg-card);padding:26px 24px;}
+  .gov h4{font-family:'Space Grotesk',sans-serif;font-size:1.05rem;font-weight:600;margin-bottom:8px;}
+  .gov p{margin:0;font-size:0.9rem;color:var(--ink-soft);}
+  .authority-note{
+    margin-top:28px;padding:20px 24px;border-left:2px solid var(--accent);
+    background:var(--bg-soft);border-radius:0 8px 8px 0;font-size:0.92rem;color:var(--ink-soft);
+  }
+  .authority-note b{color:var(--ink);}
+
+  /* ---------- PARTNERS ---------- */
+  .partners{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;}
+  @media (max-width:900px){ .partners{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:520px){ .partners{grid-template-columns:1fr;} }
+  .partner{background:var(--bg-card);padding:24px 20px;}
+  .partner .label{display:block;margin-bottom:10px;}
+  .partner h4{font-family:'Space Grotesk',sans-serif;font-size:1.02rem;font-weight:600;margin-bottom:10px;}
+  .partner p{margin:0;font-size:0.84rem;color:var(--ink-soft);}
+
+  /* ---------- TRUST ---------- */
+  .trust{background:var(--ink);color:var(--bg);border-radius:14px;padding:clamp(32px,5vw,52px);}
+  .trust .section-head h2{color:var(--bg);}
+  .trust .section-head .label{color:var(--accent-dim);}
+  .trustgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px 32px;}
+  @media (max-width:860px){ .trustgrid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:560px){ .trustgrid{grid-template-columns:1fr;} }
+  .trust-item h4{font-family:'Space Grotesk',sans-serif;font-size:0.98rem;font-weight:600;margin-bottom:6px;color:var(--bg);}
+  .trust-item p{margin:0;font-size:0.86rem;color:rgba(10,14,20,0.68);}
+
+  /* ---------- PATHWAY ---------- */
+  .pathway{display:flex;align-items:stretch;gap:0;border:1px solid var(--rule);border-radius:10px;overflow:hidden;}
+  @media (max-width:760px){ .pathway{flex-direction:column;} }
+  .pwstep{flex:1;background:var(--bg-card);padding:28px 26px;position:relative;}
+  .pwstep .label{display:block;margin-bottom:10px;}
+  .pwstep h4{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:600;margin-bottom:8px;}
+  .pwstep p{margin:0;font-size:0.86rem;color:var(--ink-soft);}
+  .pwarrow{flex:none;width:48px;display:flex;align-items:center;justify-content:center;background:var(--bg-raised);color:var(--ink-faint);}
+  @media (max-width:760px){ .pwarrow{width:100%;height:32px;} .pwarrow svg{transform:rotate(90deg);} }
+
+  /* ---------- IMPACT / ASK ---------- */
+  .impact-split{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;}
+  @media (max-width:860px){ .impact-split{grid-template-columns:1fr;} }
+  .impact-col{background:var(--bg-card);padding:clamp(26px,3.4vw,38px);}
+  .impact-col .label{display:block;margin-bottom:16px;}
+  .impact-col ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;}
+  .impact-col li{display:flex;gap:12px;font-size:0.92rem;color:var(--ink-soft);align-items:flex-start;}
+  .impact-col .tick{flex:none;width:18px;height:18px;margin-top:2px;color:var(--verify);}
+  .impact-col.ask .tick{color:var(--accent);}
+
+  /* ---------- CTA ---------- */
+  .cta{
+    background:linear-gradient(135deg,var(--bg-raised),var(--bg-soft));
+    border:1px solid var(--rule-strong);border-radius:14px;
+    padding:clamp(36px,5vw,56px);
+    display:grid;grid-template-columns:1.2fr 0.8fr;gap:40px;align-items:center;
+  }
+  @media (max-width:760px){ .cta{grid-template-columns:1fr;} }
+  .cta h2{font-size:clamp(1.7rem,3vw,2.2rem);margin-bottom:14px;}
+  .cta p{color:var(--ink-soft);max-width:44ch;}
+  .cta-contact{display:flex;flex-direction:column;gap:10px;font-size:0.92rem;}
+  .cta-contact .label{margin-bottom:4px;}
+  .cta-contact a{text-decoration:none;color:var(--ink);transition:color .15s ease;}
+  .cta-contact a:hover{color:var(--accent);}
+  .cta-contact .partner-line{margin-top:10px;font-size:0.82rem;color:var(--ink-faint);}
+
+  /* ---------- FOOTER ---------- */
+  footer{border-top:1px solid var(--rule);padding:46px 0 36px;}
+  footer .wrap{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;}
+  footer .label{display:block;margin-bottom:10px;}
+  footer p{margin:0;font-size:0.85rem;color:var(--ink-soft);max-width:40ch;}
+  .foot-links{display:flex;gap:28px;flex-wrap:wrap;}
+  .foot-links a{font-size:0.85rem;text-decoration:none;color:var(--ink-soft);}
+  .foot-links a:hover{color:var(--accent);}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brandmark">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16 6L25 12V20L16 26L7 20V12L16 6Z" stroke="var(--accent)" stroke-width="1.5"/>
+        <path d="M16 14L20.5 16.5V21.5L16 24L11.5 21.5V16.5L16 14Z" fill="var(--verify)"/>
+      </svg>
+      Minerals<span class="ready">Ready</span>
+    </div>
+    <div class="navlinks">
+      <ul>
+        <li><a href="#platform">Platform</a></li>
+        <li><a href="#curriculum">Curriculum</a></li>
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#governance">Governance</a></li>
+        <li><a href="#trust">Trust</a></li>
+      </ul>
+      <a class="btn btn-solid" href="#contact">Partner with us</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <div class="hero-eyebrow"><span class="rule"></span><span class="label">Minerals Compliance &amp; Training Platform · MCTP</span></div>
+      <h1>Compliance travels.<br>Capacity now <span class="accentword">travels with it.</span></h1>
+      <p class="lede">MineralsReady is a government-led digital public service for responsible artisanal and small-scale mining: one governed platform, a field app for miners, traders and site holders, and a live dashboard for the regulators who oversee them.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-solid" href="#platform">See the platform</a>
+        <a class="btn" href="#contact">Start a scoping conversation</a>
+      </div>
+      <p class="hero-note">The platform supports statutory authority with better data and clearer records. It does not replace it.</p>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <svg viewBox="0 0 400 340" xmlns="http://www.w3.org/2000/svg" fill="none">
+        <rect x="18" y="30" width="150" height="280" rx="18" fill="var(--bg-card)" stroke="var(--rule-strong)" stroke-width="1.2"/>
+        <rect x="34" y="56" width="118" height="10" rx="2" fill="var(--bg-soft)"/>
+        <rect x="34" y="76" width="80" height="7" rx="2" fill="var(--bg-soft)"/>
+        <g stroke="var(--accent)" stroke-width="1.3">
+          <rect x="34" y="100" width="118" height="46" rx="6" fill="none" opacity="0.8"/>
+          <path d="M44 123L50 129L62 113" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        <rect x="34" y="158" width="118" height="46" rx="6" fill="none" stroke="var(--rule-strong)" stroke-width="1.2"/>
+        <rect x="44" y="172" width="70" height="6" rx="2" fill="var(--bg-soft)"/>
+        <rect x="44" y="184" width="50" height="6" rx="2" fill="var(--bg-soft)"/>
+        <rect x="34" y="216" width="118" height="46" rx="6" fill="none" stroke="var(--rule-strong)" stroke-width="1.2"/>
+        <circle cx="52" cy="239" r="8" fill="none" stroke="var(--verify)" stroke-width="1.3"/>
+        <path d="M48 239L51 242L57 235" stroke="var(--verify)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="68" y="233" width="68" height="6" rx="2" fill="var(--bg-soft)"/>
+        <rect x="200" y="86" width="182" height="134" rx="14" fill="var(--bg-card)" stroke="var(--rule-strong)" stroke-width="1.2"/>
+        <rect x="216" y="100" width="90" height="9" rx="2" fill="var(--bg-soft)"/>
+        <circle cx="356" cy="105" r="5" fill="var(--verify)" opacity="0.8"/>
+        <g stroke="var(--verify)" stroke-width="1.2" opacity="0.9">
+          <rect x="216" y="124" width="150" height="70" rx="6" fill="none"/>
+          <path d="M226 180L246 158L264 168L288 138L312 164L334 148L356 160" fill="none"/>
+        </g>
+        <rect x="226" y="184" width="26" height="6" rx="1.5" fill="var(--accent)" opacity="0.7"/>
+        <rect x="258" y="184" width="26" height="6" rx="1.5" fill="var(--verify)" opacity="0.5"/>
+        <path d="M168 150C182 150 186 150 200 150" stroke="var(--rule-strong)" stroke-width="1.3" stroke-dasharray="4 5"/>
+        <circle cx="184" cy="150" r="5" fill="var(--bg)" stroke="var(--accent)" stroke-width="1.3"/>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<section class="ledger">
+  <div class="wrap">
+    <div class="ledger-item">
+      <div class="num">45M</div>
+      <p>People directly employed in artisanal &amp; small-scale mining worldwide</p>
+    </div>
+    <div class="ledger-item">
+      <div class="num">80+</div>
+      <p>Countries where ASM is a leading rural, non-farm employer</p>
+    </div>
+    <div class="ledger-item">
+      <div class="num">8</div>
+      <p>Module families covering safety, environment, geology and compliance</p>
+    </div>
+    <div class="ledger-item">
+      <div class="num">12mo</div>
+      <p>From inception to institutional handover, local team to local team</p>
+    </div>
+  </div>
+</section>
+
+<section id="platform">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>One platform,<br>two connected surfaces.</h2>
+      <span class="label">The platform in one view</span>
+    </div>
+    <p class="section-intro">A mobile app for the field and a dashboard for the regulator, sharing one governed content base. What a miner completes, a regulator can see; what a regulator approves, a miner can act on.</p>
+    <div class="surfaces">
+      <div class="surface app">
+        <span class="label">MineralsReady app</span>
+        <h3>For the field</h3>
+        <p>For miners, site holders, traders, graders and trainees, built offline-first for remote sites.</p>
+        <ul class="featlist">
+          <li><svg class="tick" viewBox="0 0 20 20" fill="none"><path d="M4 10.5L8 14.5L16 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Learn</b> — short offline-first modules in plain language</span></li>
+          <li><svg class="tick" viewBox="0 0 20 20" fill="none"><path d="M4 10.5L8 14.5L16 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Verify</b> — assessments with regulator-defined pass thresholds</span></li>
+          <li><svg class="tick" viewBox="0 0 20 20" fill="none"><path d="M4 10.5L8 14.5L16 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Improve</b> — checklists, SOPs and reporting templates</span></li>
+          <li><svg class="tick" viewBox="0 0 20 20" fill="none"><path d="M4 10.5L8 14.5L16 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Self-Report</b> — upload documents, photos and site records</span></li>
+        </ul>
+      </div>
+      <div class="surface dash">
+        <span class="label">Government dashboard</span>
+        <h3>For the regulator</h3>
+        <p>For ministries, agencies, inspectors and district offices, built for oversight at scale.</p>
+        <ul class="featlist">
+          <li><svg class="tick" viewBox="0 0 20 20" fill="none"><path d="M4 10.5L8 14.5L16 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Set standards</b> — approve modules and compliance criteria</span></li>
+          <li><svg class="tick" viewBox="0 0 20 20" fill="none"><path d="M4 10.5L8 14.5L16 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Review &amp; verify</b> — completion records and submitted evidence</span></li>
+          <li><svg class="tick" viewBox="0 0 20 20" fill="none"><path d="M4 10.5L8 14.5L16 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Monitor &amp; prioritise</b> — a risk-based view of site readiness</span></li>
+          <li><svg class="tick" viewBox="0 0 20 20" fill="none"><path d="M4 10.5L8 14.5L16 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Strengthen oversight</b> — auditable records, fewer bottlenecks</span></li>
+        </ul>
+      </div>
+    </div>
+    <p class="seam-note">Licence readiness means a licence confirms more than submitted forms and fees — it confirms that the applicant has completed country-specific learning and passed a regulator-approved assessment. The government remains the sole issuer of licences throughout.</p>
+  </div>
+</section>
+
+<section class="alt" id="why">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Compliance travels.<br>Capacity does not.</h2>
+      <span class="label">Why this, why now</span>
+    </div>
+    <p class="section-intro">Standards arrive at the mine face as paperwork addressed to those least equipped to satisfy it. Six gaps explain why, and each maps to a function the platform performs.</p>
+    <div class="reasons">
+      <div class="reason">
+        <span class="idx">01</span>
+        <h4>Scattered rules</h4>
+        <p>Guidance sits across institutions and documents, hard to read and apply on site.</p>
+      </div>
+      <div class="reason">
+        <span class="idx">02</span>
+        <h4>Thin training access</h4>
+        <p>Miners, traders and small operators rarely reach formal, practical training.</p>
+      </div>
+      <div class="reason">
+        <span class="idx">03</span>
+        <h4>Persistent risk</h4>
+        <p>Safety and environmental hazards stay high where upskilling is inconsistent.</p>
+      </div>
+      <div class="reason">
+        <span class="idx">04</span>
+        <h4>Stretched regulators</h4>
+        <p>Agencies lack tools to verify readiness at scale or monitor remote activity.</p>
+      </div>
+      <div class="reason">
+        <span class="idx">05</span>
+        <h4>Credibility gap</h4>
+        <p>Buyers and partners increasingly expect official, verifiable compliance signals.</p>
+      </div>
+      <div class="reason">
+        <span class="idx">06</span>
+        <h4>A readiness gap</h4>
+        <p>The constraint is not unwillingness, it is a reachable route to proving practice.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="curriculum">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>A curriculum matched<br>to real field needs.</h2>
+      <span class="label">What's inside</span>
+    </div>
+    <p class="section-intro">Eight module families, adapted to national law, local realities, literacy and language, each delivered as short, completable units.</p>
+    <div class="modgrid">
+      <div class="mod">
+        <div class="glyph"><svg viewBox="0 0 20 20" fill="none"><path d="M10 2L17 5.5V10C17 14 13.5 16.8 10 18C6.5 16.8 3 14 3 10V5.5L10 2Z" stroke="currentColor" stroke-width="1.4"/></svg></div>
+        <h4>Health &amp; Safety</h4>
+        <p>PPE, hazard ID, safe handling, incident and emergency response.</p>
+      </div>
+      <div class="mod">
+        <div class="glyph"><svg viewBox="0 0 20 20" fill="none"><path d="M10 2C6 7 4 10 4 12.5C4 15.5 6.7 18 10 18C13.3 18 16 15.5 16 12.5C16 10 14 7 10 2Z" stroke="currentColor" stroke-width="1.4"/></svg></div>
+        <h4>Environmental Practice</h4>
+        <p>Water, waste, mercury-risk awareness, erosion control, rehabilitation.</p>
+      </div>
+      <div class="mod">
+        <div class="glyph"><svg viewBox="0 0 20 20" fill="none"><path d="M3 16L7 8L10 12L13 6L17 16" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></div>
+        <h4>Geological Knowledge</h4>
+        <p>Local deposits, mineral ID, site maps, sampling, geology–safety links.</p>
+      </div>
+      <div class="mod">
+        <div class="glyph"><svg viewBox="0 0 20 20" fill="none"><rect x="4" y="3" width="12" height="14" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M7 7H13M7 10H13M7 13H10" stroke="currentColor" stroke-width="1.2"/></svg></div>
+        <h4>Responsible Operations</h4>
+        <p>Documentation standards, site discipline, grievance handling.</p>
+      </div>
+      <div class="mod">
+        <div class="glyph"><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.4"/><path d="M10 6V10L13 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+        <h4>Due Diligence &amp; Traceability</h4>
+        <p>Risk screening, chain-of-custody, KYC basics, sourcing expectations.</p>
+      </div>
+      <div class="mod">
+        <div class="glyph"><svg viewBox="0 0 20 20" fill="none"><path d="M5 3H13L15 5V17H5V3Z" stroke="currentColor" stroke-width="1.4"/><path d="M7 7H11M7 10H11M7 13H9" stroke="currentColor" stroke-width="1.2"/></svg></div>
+        <h4>Policy &amp; Framework Library</h4>
+        <p>Searchable national rules and forms in plain-language summaries.</p>
+      </div>
+      <div class="mod">
+        <div class="glyph"><svg viewBox="0 0 20 20" fill="none"><path d="M10 2L12.2 7.2L18 7.8L13.6 11.4L15 17L10 13.8L5 17L6.4 11.4L2 7.8L7.8 7.2L10 2Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></div>
+        <h4>Ethics &amp; Conduct</h4>
+        <p>Anti-bribery, respectful workplace, community relations.</p>
+      </div>
+      <div class="mod">
+        <div class="glyph"><svg viewBox="0 0 20 20" fill="none"><rect x="3" y="5" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M3 8H17" stroke="currentColor" stroke-width="1.2"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor"/></svg></div>
+        <h4>Digital Reporting</h4>
+        <p>Document, photo and video upload; incident and checklist submission.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Five phases,<br>evidence-led throughout.</h2>
+      <span class="label">How we implement</span>
+    </div>
+    <p class="section-intro">A 12-month, overlapping implementation. Co-design, build, localisation and capacity transfer run in parallel to compress the schedule. Each phase produces a decision point for the Steering Group before the next begins.</p>
+    <ol class="phases">
+      <li><span class="when">M1–3</span><h4>Co-design &amp; governance</h4><p>Steering group, pilot scope, legal alignment, content priorities.</p></li>
+      <li><span class="when">M2–5</span><h4>Content &amp; platform build</h4><p>Iterative content, app and dashboard build, data governance.</p></li>
+      <li><span class="when">M6–8</span><h4>Pilot implementation</h4><p>Selected cohorts use learning, assessment and reporting; trained trainers.</p></li>
+      <li><span class="when">M8–10</span><h4>Evaluation &amp; refinement</h4><p>Analyse use data and feedback; adjust content and thresholds.</p></li>
+      <li><span class="when">M10–12</span><h4>Rollout &amp; handover</h4><p>Scaling model, train-the-trainer, communications, ownership transfer.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section id="governance">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Government-led, with<br>clear role separation.</h2>
+      <span class="label">How it is governed</span>
+    </div>
+    <p class="section-intro">Ownership sits with government from day one. Delivery and evaluation are kept apart by design, so evidence on what works is generated independently of the party responsible for results.</p>
+    <div class="govgrid">
+      <div class="gov">
+        <h4>Joint Steering Group</h4>
+        <p>Chaired by the lead government agency, with ministries, agencies, training institutions and community representation. Confirms scope, owns decisions, validates milestones.</p>
+      </div>
+      <div class="gov">
+        <h4>Content governance</h4>
+        <p>Defined review cycles, version control and alignment with national and international legal frameworks. Field observations feed back into improved modules.</p>
+      </div>
+      <div class="gov">
+        <h4>Independent evaluation</h4>
+        <p>Monitoring, evaluation, accountability and learning (MEAL) is delivered by a partner with no implementation role, reporting findings directly to the Steering Group.</p>
+      </div>
+      <div class="gov">
+        <h4>Minimal, purposeful data</h4>
+        <p>Only what is needed for training completion and licence readiness is collected, under access rules the government sets.</p>
+      </div>
+    </div>
+    <div class="authority-note"><b>Statutory authority preserved.</b> The platform supports training, documentation and readiness. It does not replace regulatory authority; approvals remain with the state.</div>
+  </div>
+</section>
+
+<section class="alt" id="partners">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Delivery partners<br>and their remit.</h2>
+      <span class="label">Who delivers it</span>
+    </div>
+    <p class="section-intro">Confirmed roles held apart so responsibility is legible to government and funders. A local IT team is trained from early in the programme and assumes long-term ownership at handover.</p>
+    <div class="partners">
+      <div class="partner">
+        <span class="label">Switzerland</span>
+        <h4>Ayara Foundation</h4>
+        <p>International Project Lead: governance architecture, consortium orchestration, government and donor coordination, senior content supervision.</p>
+      </div>
+      <div class="partner">
+        <span class="label">Switzerland</span>
+        <h4>Aquitas (Switzerland) Ltd.</h4>
+        <p>MEAL &amp; Evidence Partner: independent monitoring, evaluation and learning, baseline, reporting QA and doctoral research integration. No implementation role.</p>
+      </div>
+      <div class="partner">
+        <span class="label">ETH Spinoff, Switzerland</span>
+        <h4>Voviva Ltd.</h4>
+        <p>App build &amp; remote support: architecture, mobile app and dashboard build, AI integration, QA, security, technical handover.</p>
+      </div>
+      <div class="partner">
+        <span class="label">Benin</span>
+        <h4>BarikaWords</h4>
+        <p>Accessibility &amp; media: African-language adaptation, plain-language localisation, AI integration.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pathway">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Part of one<br>national pathway.</h2>
+      <span class="label">The bigger picture</span>
+    </div>
+    <p class="section-intro">MineralsReady is designed alongside a planned National Minerals College, so digital readiness and accredited practical skills reinforce each other as one government-led pathway.</p>
+    <div class="pathway">
+      <div class="pwstep">
+        <span class="label">01 · MineralsReady</span>
+        <h4>Mining readiness</h4>
+        <p>Practical digital learning, verification and compliance at the point of work.</p>
+      </div>
+      <div class="pwarrow"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8H14M9 3L14 8L9 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="pwstep">
+        <span class="label">02 · National Minerals College</span>
+        <h4>Accredited skills</h4>
+        <p>Nationally recognised technical qualifications, from rough evaluation to cutting and refining.</p>
+      </div>
+      <div class="pwarrow"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8H14M9 3L14 8L9 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="pwstep">
+        <span class="label">03 · National result</span>
+        <h4>Local value</h4>
+        <p>More skilled jobs, a credible responsible minerals industry, more value retained in country.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="trust">
+  <div class="wrap">
+    <div class="trust">
+      <div class="section-head">
+        <h2>Minimal data,<br>maximum trust.</h2>
+        <span class="label">Data, privacy &amp; sovereignty</span>
+      </div>
+      <div class="trustgrid">
+        <div class="trust-item"><h4>Data minimisation</h4><p>Only what is needed for training completion and licence readiness is collected.</p></div>
+        <div class="trust-item"><h4>Clear purpose</h4><p>Data serves training, documentation and regulatory processes defined by national policy.</p></div>
+        <div class="trust-item"><h4>Defined access</h4><p>Learners, trainers and regulators hold role-based access to relevant information only.</p></div>
+        <div class="trust-item"><h4>No personal surveillance</h4><p>The platform documents readiness; it is not designed for personal tracking.</p></div>
+        <div class="trust-item"><h4>Secure storage</h4><p>Stored and retained under national data-protection and regulatory requirements.</p></div>
+        <div class="trust-item"><h4>National sovereignty</h4><p>Hosting and ownership arrangements confirmed with government before deployment.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="impact">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>What success<br>looks like.</h2>
+      <span class="label">Measurable impact</span>
+    </div>
+    <div class="impact-split">
+      <div class="impact-col">
+        <span class="label">Measurable outcomes</span>
+        <ul>
+          <li><svg class="tick" viewBox="0 0 20 20" fill="none"><path d="M4 10.5L8 14.5L16 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Higher training completion and assessment pass rates</li>
+          <li><svg class="tick" viewBox="0 0 20 20" fill="none"><path d="M4 10.5L8 14.5L16 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Fewer preventable safety and environmental incidents</li>
+          <li><svg class="tick" viewBox="0 0 20 20" fill="none"><path d="M4 10.5L8 14.5L16 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Greater adoption of environmental and operational best practice</li>
+          <li><svg class="tick" viewBox="0 0 20 20" fill="none"><path d="M4 10.5L8 14.5L16 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>More efficient, transparent licensing workflows</li>
+          <li><svg class="tick" viewBox="0 0 20 20" fill="none"><path d="M4 10.5L8 14.5L16 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Stronger credibility with national and international partners</li>
+        </ul>
+      </div>
+      <div class="impact-col ask">
+        <span class="label">What we ask of partners</span>
+        <ul>
+          <li><svg class="tick" viewBox="0 0 20 20" fill="none"><path d="M4 10.5L8 14.5L16 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Institutional partners for co-development, policy alignment and endorsement</li>
+          <li><svg class="tick" viewBox="0 0 20 20" fill="none"><path d="M4 10.5L8 14.5L16 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Access to pilot sites and defined user cohorts</li>
+          <li><svg class="tick" viewBox="0 0 20 20" fill="none"><path d="M4 10.5L8 14.5L16 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>A named lead agency to chair the Steering Group</li>
+          <li><svg class="tick" viewBox="0 0 20 20" fill="none"><path d="M4 10.5L8 14.5L16 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Support for build, content and the pilot</li>
+          <li><svg class="tick" viewBox="0 0 20 20" fill="none"><path d="M4 10.5L8 14.5L16 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Academic and evaluation support for independent MEAL</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="cta">
+      <div>
+        <span class="label">Let us shape this together</span>
+        <h2>Start a scoping conversation.</h2>
+        <p>A short scoping conversation confirms the lead agency, pilot geography, and the first content priorities, to finalise the full project scope before any commitment.</p>
+      </div>
+      <div class="cta-contact">
+        <span class="label">Ayara Foundation, Switzerland</span>
+        <strong>Chantelle Jankin, International Project Lead</strong>
+        <a href="tel:+41797502569">+41 79 750 25 69</a>
+        <a href="mailto:ayarafoundation@yandex.com">ayarafoundation@yandex.com</a>
+        <a href="https://www.ayarafoundation.com">www.ayarafoundation.com</a>
+        <p class="partner-line">In partnership with Aquitas (Switzerland) Ltd., MEAL &amp; Evidence Partner — www.aquitasconsulting.com</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <span class="label">MineralsReady</span>
+      <p>A government-led digital public service for responsible artisanal and small-scale mining, delivered under the Minerals Compliance &amp; Training Platform (MCTP) by Ayara Foundation and partners.</p>
+    </div>
+    <div class="foot-links">
+      <a href="#platform">Platform</a>
+      <a href="#curriculum">Curriculum</a>
+      <a href="#governance">Governance</a>
+      <a href="#trust">Trust</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
