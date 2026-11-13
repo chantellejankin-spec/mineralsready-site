@@ -641,10 +641,8 @@
       <div class="cta-contact">
         <span class="label">Ayara Foundation, Switzerland</span>
         <strong>Chantelle Jankin, International Project Lead</strong>
-        <a href="tel:+41797502569">+41 79 750 25 69</a>
-        <a href="mailto:ayarafoundation@yandex.com">ayarafoundation@yandex.com</a>
+        <a class="email-link" data-u="ayarafoundation" data-d="yandex.com">ayarafoundation (at) yandex.com</a>
         <a href="https://www.ayarafoundation.com">www.ayarafoundation.com</a>
-        <p class="partner-line">In partnership with Aquitas (Switzerland) Ltd., MEAL &amp; Evidence Partner (www.aquitasconsulting.com)</p>
       </div>
     </div>
   </div>
@@ -665,6 +663,14 @@
     </div>
   </div>
 </footer>
+
+<script>
+  document.querySelectorAll('.email-link').forEach((el) => {
+    const u = el.getAttribute('data-u');
+    const d = el.getAttribute('data-d');
+    el.setAttribute('href', 'mailto:' + u + '@' + d);
+  });
+</script>
 
 </body>
 </html>
